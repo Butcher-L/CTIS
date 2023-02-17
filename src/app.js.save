@@ -1,0 +1,81 @@
+cdvar express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+// var logger = require('morgan');
+const dotenv = require('dotenv');
+const cors = require('cors');
+
+
+require("tls").DEFAULT_MIN_VERSION = "TLSv1";
+
+
+dotenv.config();
+
+//login service layer
+const {users} = require('./sl-access/users/user');
+
+
+// var indexRouter = require('../routes/api/index');
+// var usersRouter = require('../routes/api/users');
+var rolesRouter = require('../routes/api/role');
+var actionRouter = require('../routes/api/action')
+var moduleRouter = require('../routes/api/module')
+var accessRightsRouter = require('../routes/api/access-right');
+var userAccountsRouter = require('../routes/api/user-accounts');
+var checkRouters = require('../routes/api/checks');
+var transactionRouters = require('../routes/api/transactions');
+var userGroupsRouters = require('../routes/api/user-groups');
+var locationRouters = require('../routes/api/locations');
+var reportsRouters = require('../routes/api/reports');
+var activityLogRouters = require('../routes/api/activity-logs');
+
+var app = express();
+
+// app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors());
+
+
+// app.use('/', indexRouter);
+// app.use('/users', usersRouter);
+
+//roles route
+app.use('/roles', rolesRouter);
+//action route
+app.use('/action', actionRouter);
+//roles module
+app.use('/module', moduleRouter);
+//access right
+app.use('/access-rights', accessRightsRouter);
+//users
+app.use('/user', userAccountsRouter);
+//checks
+app.use('/check', checkRouters);
+//transactions
+app.use('/transaction', transactionRouters);
+//user groups
+app.use('/user-groups', userGroupsRouters);
+//locations
+app.use('/locations', locationRouters);
+//reports
+app.use('/reports', reportsRouters);
+//activity logs
+app.use('/activity-logs', activityLogRouters);
+
+const PORT = process.env.PORT || 3000;
+
+// users.userLogin()
+//   .then(res => {
+//     process.env.SESSIONID = res.SessionId;
+//   })
+
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}.`);
+  });
+  
+console.log(`Server is connecting to db: ${process.env.PGDATABASE}.`);
+  
+module.exports = app;
